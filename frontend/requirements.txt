@@ -1,43 +1,26 @@
-If you already have the **EngiSummary frontend project**, run it like this in VS Code:
+## Requirements
 
-### 1. Open the frontend folder
+* Node.js 18+
+* npm
+* React 18
+* Vite
+* Tailwind CSS
+* React Router
+* Axios
+* Lucide React
+
+### Run Locally
 
 ```bash
-cd path\to\EngiSummary\frontend
-```
-
-### 2. Install dependencies
-
-```bash
+git clone <repository-url>
+cd frontend
 npm install
-```
-
-### 3. Start the development server
-
-```bash
 npm run dev
 ```
 
-You should see something like:
+Open `http://localhost:5173` in your browser.
 
-```text
-Local: http://localhost:5173/
-```
-
-Open that URL in your browser.
-
-### If `npm` is not recognized
-
-Check Node.js:
-
-```bash
-node -v
-npm -v
-```
-
-If both don't work, install **Node.js** first.
-
-### If you have `.env.example`
+### Environment
 
 Create a `.env` file:
 
@@ -46,23 +29,4 @@ VITE_API_BASE_URL=http://localhost:8000
 VITE_MOCK_MODE=true
 ```
 
-For now, keep `VITE_MOCK_MODE=true` so the frontend works **without your backend**.
-
-### For production build
-
-```bash
-npm run build
-```
-
-Then preview it:
-
-```bash
-npm run preview
-```
-
-**For your current project, the main command you need is:**
-
-```bash
-npm install
-npm run dev
-```
+Set `VITE_MOCK_MODE=false` when connecting to the real backend.
