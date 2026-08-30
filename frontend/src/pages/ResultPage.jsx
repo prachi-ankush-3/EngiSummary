@@ -20,10 +20,14 @@ export default function ResultPage() {
   if (!result) return null
 
   const handleView = () => {
-    window.open(result.pdfUrl, '_blank', 'noopener,noreferrer')
+    if (result.pdfUrl) {
+      window.open(result.pdfUrl, '_blank', 'noopener,noreferrer')
+    }
   }
 
   const handleDownload = () => {
+    if (!result.pdfUrl) return
+
     const link = document.createElement('a')
     link.href = result.pdfUrl
     link.download = file?.name ? `${file.name.replace(/\.pdf$/i, '')}-summary.pdf` : 'drawing-summary.pdf'
