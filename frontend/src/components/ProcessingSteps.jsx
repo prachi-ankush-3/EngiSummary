@@ -1,7 +1,7 @@
 import { Check, Loader2 } from 'lucide-react'
 
 export const PROCESS_STEPS = [
-  { key: 'uploading', label: 'Uploading', description: 'Sending your PDF to EngiSummary' },
+  { key: 'uploading', label: 'Uploading', description: 'Sending your drawing to EngiSummary' },
   { key: 'analyzing', label: 'Analyzing', description: 'Reading title block, views and annotations' },
   { key: 'generating', label: 'Generating Summary', description: 'Building the summary table' },
   { key: 'completed', label: 'Completed', description: 'Your PDF is ready' },

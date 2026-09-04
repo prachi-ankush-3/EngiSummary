@@ -9,17 +9,20 @@ const HIGHLIGHTS = [
   {
     icon: ScanSearch,
     title: 'Reads the drawing',
-    description: 'Extracts title block fields, notes and dimensions automatically.',
+    description:
+      'Extracts title block fields, notes and dimensions automatically.',
   },
   {
     icon: Table2,
     title: 'Builds the Summary',
-    description: 'Compiles a clean summary table.',
+    description:
+      'Compiles a clean engineering summary table.',
   },
   {
     icon: ClipboardList,
-    title: 'Adds it to the PDF',
-    description: 'Returns your original drawing with the table appended.',
+    title: 'Generates the Output',
+    description:
+      'Returns the processed drawing with the summary added.',
   },
 ]
 
@@ -29,6 +32,7 @@ export default function HomePage() {
 
   const handleProcess = () => {
     if (!file) return
+
     navigate('/processing')
   }
 
@@ -39,19 +43,24 @@ export default function HomePage() {
       <main className="mx-auto max-w-3xl px-6 pb-20 pt-16 sm:pt-20">
         <div className="text-center">
           <span className="inline-flex items-center rounded-full border border-border-strong bg-white px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
-            PDF In → Summarized PDF Out
+            PDF / DWF In → Processed PDF Out
           </span>
+
           <h1 className="mt-5 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Engineering Drawings to Structured Summaries.
           </h1>
+
           <p className="mx-auto mt-3 max-w-xl text-base text-muted">
-            Upload an engineering drawing PDF. EngiSummary reads it and hands back the same
-            drawing with a summary table added.
+            Upload an engineering drawing in PDF or DWF format.
+            EngiSummary analyzes the drawing and generates a structured summary.
           </p>
         </div>
 
         <div className="mt-10">
-          <UploadDropzone file={file} onSelect={selectFile} />
+          <UploadDropzone
+            file={file}
+            onSelect={selectFile}
+          />
         </div>
 
         <div className="mt-6 flex justify-center">
@@ -74,10 +83,19 @@ export default function HomePage() {
               className="rounded-lg border border-border bg-white/70 p-4 text-left"
             >
               <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-                <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
+                <Icon
+                  className="h-[18px] w-[18px]"
+                  strokeWidth={2}
+                />
               </span>
-              <p className="mt-3 text-sm font-medium text-ink">{title}</p>
-              <p className="mt-1 text-xs text-muted">{description}</p>
+
+              <p className="mt-3 text-sm font-medium text-ink">
+                {title}
+              </p>
+
+              <p className="mt-1 text-xs text-muted">
+                {description}
+              </p>
             </div>
           ))}
         </div>
