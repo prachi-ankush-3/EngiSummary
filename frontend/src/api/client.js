@@ -276,6 +276,54 @@ export async function getResult(id, mockPreviewUrl) {
 }
 
 // ---------------------------------------------------------------------
+// Send generated PDF via email
+//
+// Real endpoint:
+// POST /api/send-pdf/:id
+// Body: { email }
+//
+// NOTE: this must respect MOCK_MODE like every other call in this file.
+// Previously this function always hit the real backend even while the rest
+// of the app (upload/process/result) was running on mock data. Since mock
+// IDs (e.g. "drw-...", "mock-...") never exist as real jobs on the backend,
+// every "Send Email" click failed with a 404 "Job not found" error — this
+// was the root cause of email sending appearing broken in the default
+// (mock) configuration. Set VITE_MOCK_MODE=false once the real backend and
+// its SMTP settings are configured, so this hits the real /send-pdf route.
+// ---------------------------------------------------------------------
+
+export async function sendPdfEmail(id, email) {
+  if (!id) {
+    throw new Error('Drawing ID is missing.')
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error('Please enter a valid email address.')
+  }
+
+  // -------------------------------------------------------------------
+  // Mock Mode
+  // -------------------------------------------------------------------
+
+  if (MOCK_MODE) {
+    await wait(700)
+
+    return {
+      success: true,
+      message: 'Email sent (mock mode — no real email was sent).',
+    }
+  }
+
+  // -------------------------------------------------------------------
+  // Real Backend
+  // -------------------------------------------------------------------
+
+  const { data } = await api.post(`/send-pdf/${id}`, { email })
+
+  return data
+}
+
+// ---------------------------------------------------------------------
 // Export
 // ---------------------------------------------------------------------
 

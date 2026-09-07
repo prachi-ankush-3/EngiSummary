@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.core import logger, settings
-from app.api.routes import upload, processing, status, download
+from app.api.routes import upload, processing, status, download, email_pdf
 
 
 # Create FastAPI application
@@ -52,6 +52,12 @@ app.include_router(
     download.router,
     prefix="/api",
     tags=["Download"]
+)
+
+app.include_router(
+    email_pdf.router,
+    prefix="/api",
+    tags=["Email"]
 )
 
 

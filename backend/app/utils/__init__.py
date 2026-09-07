@@ -7,6 +7,7 @@ from app.utils.validators import (
     is_valid_pdf,
     validate_file_size,
     validate_uploaded_pdf,
+    is_valid_email,
     safe_filename
 )
 from app.utils.units import UnitConverter, LengthUnit, WeightUnit
@@ -25,6 +26,7 @@ __all__ = [
     "is_valid_pdf",
     "validate_file_size",
     "validate_uploaded_pdf",
+    "is_valid_email",
     "safe_filename",
     "UnitConverter",
     "LengthUnit",

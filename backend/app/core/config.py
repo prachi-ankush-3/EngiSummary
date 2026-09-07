@@ -7,8 +7,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Backend root directory (.../backend), independent of the process's current
+# working directory. Anchoring paths here avoids "file not found" issues when
+# the app is started from a different directory (e.g. via a process manager
+# or a different deployment working directory).
+BACKEND_ROOT = Path(__file__).parent.parent.parent
+
 # Load .env file
-env_path = Path(__file__).parent.parent.parent / ".env"
+env_path = BACKEND_ROOT / ".env"
 load_dotenv(env_path)
 
 
@@ -31,15 +37,32 @@ class Settings:
     # File Configuration
     MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "25"))
     MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
-    UPLOAD_DIR = os.getenv("UPLOAD_DIR", "uploads")
-    OUTPUT_DIR = os.getenv("OUTPUT_DIR", "outputs")
-    TEMP_DIR = "app/temp"
+
+    # Resolve upload/output/temp dirs as absolute paths anchored to the backend
+    # root. If UPLOAD_DIR/OUTPUT_DIR are given as absolute paths in .env, those
+    # are respected as-is; otherwise they are resolved relative to BACKEND_ROOT
+    # (not the process cwd), so file paths stay correct no matter where the
+    # server process is launched from.
+    UPLOAD_DIR = str((BACKEND_ROOT / os.getenv("UPLOAD_DIR", "uploads")).resolve()) \
+        if not os.path.isabs(os.getenv("UPLOAD_DIR", "uploads")) else os.getenv("UPLOAD_DIR")
+    OUTPUT_DIR = str((BACKEND_ROOT / os.getenv("OUTPUT_DIR", "outputs")).resolve()) \
+        if not os.path.isabs(os.getenv("OUTPUT_DIR", "outputs")) else os.getenv("OUTPUT_DIR")
+    TEMP_DIR = str((BACKEND_ROOT / "app" / "temp").resolve())
     
     # Material Properties
     STEEL_DENSITY = float(os.getenv("STEEL_DENSITY", "7850"))
     
     # Logging
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+    # SMTP / Email Configuration (used to send generated PDFs)
+    SMTP_HOST = os.getenv("SMTP_HOST", "")
+    SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+    SMTP_USER = os.getenv("SMTP_USER", "")
+    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+    SMTP_FROM = os.getenv("SMTP_FROM", os.getenv("SMTP_USER", ""))
+    SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
+    SMTP_USE_SSL = os.getenv("SMTP_USE_SSL", "false").lower() == "true"
     
     # Ensure directories exist
     @staticmethod

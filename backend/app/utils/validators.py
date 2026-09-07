@@ -4,8 +4,11 @@ Contains validation functions for files and data
 """
 
 import os
+import re
 from pathlib import Path
 from app.core.config import settings
+
+EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
 def is_valid_pdf(file_path: str) -> bool:
@@ -45,6 +48,13 @@ def validate_uploaded_pdf(file_path: str) -> tuple[bool, str]:
         return False, f"File size exceeds {settings.MAX_FILE_SIZE_MB} MB limit"
     
     return True, ""
+
+
+def is_valid_email(email: str) -> bool:
+    """Validate a basic email address format"""
+    if not email or not isinstance(email, str):
+        return False
+    return bool(EMAIL_PATTERN.match(email.strip()))
 
 
 def safe_filename(filename: str) -> str:

@@ -39,6 +39,18 @@ class ResultResponse(BaseModel):
     error: Optional[str] = None
 
 
+class SendPdfEmailRequest(BaseModel):
+    """Request body for sending the generated PDF by email"""
+    email: str
+
+
+class SendPdfEmailResponse(BaseModel):
+    """Response for send-PDF-via-email endpoint"""
+    success: bool
+    message: Optional[str] = None
+    error: Optional[str] = None
+
+
 class ErrorResponse(BaseModel):
     """Standard error response"""
     success: bool = False
