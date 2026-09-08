@@ -7,9 +7,7 @@ from app.pdf_generator import generate_summary_pdf
 
 import os
 
-
 app = FastAPI(title="BOM Drawing Summary Generator")
-
 
 @app.get("/")
 def home():
