@@ -1,0 +1,5 @@
+input/
+output/
+backend_new/.env
+backend_new/__pycache__/
+backend_new/app/__pycache__/

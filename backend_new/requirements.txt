@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+pydantic
+python-dotenv
+pymupdf
+pdfplumber
+pandas
+opencv-python
+pytesseract
+reportlab
