@@ -43,7 +43,7 @@ export default function HomePage() {
       <main className="mx-auto max-w-3xl px-6 pb-20 pt-16 sm:pt-20">
         <div className="text-center">
           <span className="inline-flex items-center rounded-full border border-border-strong bg-white px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
-            PDF / DWF In → Processed PDF Out
+            PDF In → Processed PDF Out
           </span>
 
           <h1 className="mt-5 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
@@ -51,7 +51,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mx-auto mt-3 max-w-xl text-base text-muted">
-            Upload an engineering drawing in PDF or DWF format.
+            Upload an engineering drawing in PDF format.
             EngiSummary analyzes the drawing and generates a structured summary.
           </p>
         </div>
