@@ -25,8 +25,6 @@ function getFileType(fileName) {
   const extension = fileName.split('.').pop()?.toLowerCase()
 
   if (extension === 'pdf') return 'pdf'
-  if (extension === 'dwf') return 'dwf'
-
   return 'unknown'
 }
 
@@ -85,9 +83,9 @@ export async function uploadPdf(file, onProgress) {
   // Get file type from extension
   const fileType = getFileType(file.name)
 
-  // Only PDF and DWF are allowed
-  if (fileType !== 'pdf' && fileType !== 'dwf') {
-    throw new Error('Only PDF and DWF files are supported.')
+  // The integrated backend currently accepts PDF files only.
+  if (fileType !== 'pdf') {
+    throw new Error('Only PDF files are supported by the backend.')
   }
 
   // -------------------------------------------------------------------
@@ -108,7 +106,7 @@ export async function uploadPdf(file, onProgress) {
   }
 
   // -------------------------------------------------------------------
-  // Real Backend
+  // The integrated backend processes the file during upload.
   // -------------------------------------------------------------------
 
   const formData = new FormData()
@@ -116,6 +114,7 @@ export async function uploadPdf(file, onProgress) {
   formData.append('file', file)
 
   const { data } = await api.post('/upload', formData, {
+    responseType: 'blob',
     onUploadProgress: (event) => {
       if (event.total) {
         const progress = Math.round(
@@ -127,18 +126,11 @@ export async function uploadPdf(file, onProgress) {
     },
   })
 
-  // Check backend response
-  if (!data?.success || !data?.job_id) {
-    throw new Error(
-      data?.error ||
-        data?.message ||
-        'Upload failed.'
-    )
-  }
-
   return {
-    ...data,
-    id: data.job_id,
+    id: `${file.name}-${Date.now()}`,
+    pdfUrl: URL.createObjectURL(data),
+    filename: file.name,
+    size: file.size,
     fileType,
   }
 }
@@ -172,9 +164,7 @@ export async function processDrawing(id) {
   // Real Backend
   // -------------------------------------------------------------------
 
-  const { data } = await api.post(`/process/${id}`)
-
-  return data
+  return { id, status: 'completed' }
 }
 
 // ---------------------------------------------------------------------
@@ -184,7 +174,7 @@ export async function processDrawing(id) {
 // GET /api/result/:id
 // ---------------------------------------------------------------------
 
-export async function getResult(id, mockPreviewUrl) {
+export async function getResult(id, mockPreviewUrl, generatedPdfUrl) {
   if (!id) {
     throw new Error('Drawing ID is missing.')
   }
@@ -203,75 +193,23 @@ export async function getResult(id, mockPreviewUrl) {
   // Real Backend
   // -------------------------------------------------------------------
 
-  try {
-    const { data } = await api.get(`/result/${id}`)
-
-    const backendSummary = data?.data ?? data
-
-    // If backend returns an error
-    if (!data?.success && data?.error) {
-      return buildMockResult(mockPreviewUrl)
-    }
-
-    // Get first summary item
-    const firstItem = Array.isArray(
-      backendSummary?.summary
-    )
-      ? backendSummary.summary[0]
-      : null
-
-    return {
-      id,
-
-      // Final generated PDF
-      pdfUrl: `${window.location.origin}/api/download/${id}?v=${Date.now()}`,
-
-      // Engineering summary
-      summary: {
-        partNumber:
-          firstItem?.part_no || '—',
-
-        drawingTitle:
-          firstItem?.description ||
-          'Generated Summary',
-
-        material:
-          firstItem?.material || '—',
-
-        quantity:
-          firstItem?.quantity ?? '—',
-
-        scale: 'N/A',
-
-        revision: '—',
-
-        toleranceClass: '—',
-
-        surfaceFinish: '—',
-
-        weight:
-          backendSummary?.grand_total_weight != null
-            ? `${Number(
-                backendSummary.grand_total_weight
-              ).toFixed(2)} kg`
-            : '—',
-
-        drawnBy: 'EngiSummary AI',
-
-        checkedDate:
-          new Date()
-            .toISOString()
-            .slice(0, 10),
-      },
-
-      // Keep complete backend response
-      rawSummary: backendSummary,
-    }
-  } catch (error) {
-    console.error('Failed to get result:', error)
-
-    // Fallback to mock result
-    return buildMockResult(mockPreviewUrl)
+  return {
+    id,
+    pdfUrl: generatedPdfUrl || mockPreviewUrl || '',
+    summary: {
+      partNumber: 'See generated PDF',
+      drawingTitle: 'Generated Summary',
+      material: 'See generated PDF',
+      quantity: 'See generated PDF',
+      scale: 'N/A',
+      revision: '—',
+      toleranceClass: '—',
+      surfaceFinish: '—',
+      weight: 'See generated PDF',
+      drawnBy: 'BOM Drawing Summary Backend',
+      checkedDate: new Date().toISOString().slice(0, 10),
+    },
+    rawSummary: null,
   }
 }
 

@@ -99,7 +99,8 @@ export default function ProcessingPage() {
 
         const resultData = await getResult(
           jobId,
-          previewUrl
+          previewUrl,
+          uploaded.pdfUrl
         )
 
         setResult(resultData)

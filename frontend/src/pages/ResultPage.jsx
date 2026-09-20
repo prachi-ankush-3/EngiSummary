@@ -9,7 +9,6 @@ import { useDrawing } from '../context/DrawingContext.jsx'
 import { sendPdfEmail } from '../api/client.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
 export default function ResultPage() {
   const navigate = useNavigate()
   const { file, result, reset } = useDrawing()
@@ -64,20 +63,19 @@ export default function ResultPage() {
 
     try {
       const data = await sendPdfEmail(result.id, trimmed)
-
-      if (data?.success) {
-        setEmailStatus('success')
-        setEmailMessage(data.message || 'PDF sent successfully to your email.')
-      } else {
-        setEmailStatus('error')
-        setEmailMessage(data?.error || 'Failed to send PDF. Please try again.')
-      }
+      setEmailStatus(data?.success ? 'success' : 'error')
+      setEmailMessage(
+        data?.success
+          ? data.message || 'PDF sent successfully to your email.'
+          : data?.error || 'Failed to send PDF. Please try again.'
+      )
     } catch (error) {
       setEmailStatus('error')
-      const backendMessage =
-        error?.response?.data?.error || error?.response?.data?.detail
       setEmailMessage(
-        backendMessage || error?.message || 'Failed to send PDF. Please try again.'
+        error?.response?.data?.error ||
+          error?.response?.data?.detail ||
+          error?.message ||
+          'Failed to send PDF. Please try again.'
       )
     } finally {
       setSending(false)
@@ -138,15 +136,11 @@ export default function ResultPage() {
                     disabled={sending}
                   />
                   <Button variant="primary" onClick={handleSendEmail} disabled={sending}>
-                    {sending ? 'Sending…' : 'Send Email'}
+                    {sending ? 'Sending...' : 'Send Email'}
                   </Button>
                 </div>
                 {emailMessage && (
-                  <p
-                    className={`mt-2 text-sm font-medium ${
-                      emailStatus === 'success' ? 'text-success' : 'text-red-600'
-                    }`}
-                  >
+                  <p className={`mt-2 text-sm font-medium ${emailStatus === 'success' ? 'text-success' : 'text-red-600'}`}>
                     {emailMessage}
                   </p>
                 )}
