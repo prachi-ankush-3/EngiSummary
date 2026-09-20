@@ -4,7 +4,8 @@ from email.message import EmailMessage
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+BACKEND_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(BACKEND_ROOT / ".env")
 
 
 def send_pdf_email(to_email: str, pdf_path: str, job_id: str) -> None:
