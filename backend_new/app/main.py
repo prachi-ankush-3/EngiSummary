@@ -1,5 +1,6 @@
 import os
 import re
+from pathlib import Path
 
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -12,6 +13,8 @@ from app.summary import generate_summary
 from app.pdf_generator import generate_summary_pdf
 
 app = FastAPI(title="BOM Drawing Summary Generator")
+
+SUPPORTED_EXTENSIONS = {".pdf", ".dwf"}
 
 
 class EmailRequest(BaseModel):
@@ -27,13 +30,19 @@ def home():
 
 @app.post("/upload")
 async def upload_pdf(file: UploadFile = File(...)):
+    extension = Path(file.filename or "").suffix.lower()
+    if extension not in SUPPORTED_EXTENSIONS:
+        raise HTTPException(
+            status_code=415,
+            detail="Only PDF and DWF files are supported.",
+        )
 
     # Create folders if they don't exist
     os.makedirs("input", exist_ok=True)
     os.makedirs("output", exist_ok=True)
 
     # Save uploaded PDF
-    pdf_path = f"input/{file.filename}"
+    pdf_path = os.path.join("input", os.path.basename(file.filename))
 
     with open(pdf_path, "wb") as f:
         f.write(await file.read())

@@ -25,6 +25,7 @@ function getFileType(fileName) {
   const extension = fileName.split('.').pop()?.toLowerCase()
 
   if (extension === 'pdf') return 'pdf'
+  if (extension === 'dwf') return 'dwf'
   return 'unknown'
 }
 
@@ -83,9 +84,8 @@ export async function uploadPdf(file, onProgress) {
   // Get file type from extension
   const fileType = getFileType(file.name)
 
-  // The integrated backend currently accepts PDF files only.
-  if (fileType !== 'pdf') {
-    throw new Error('Only PDF files are supported by the backend.')
+  if (!['pdf', 'dwf'].includes(fileType)) {
+    throw new Error('Only PDF and DWF files are supported by the backend.')
   }
 
   // -------------------------------------------------------------------

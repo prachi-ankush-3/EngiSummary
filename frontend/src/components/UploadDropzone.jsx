@@ -19,6 +19,7 @@ function getFileType(fileName) {
   const extension = fileName.split('.').pop()?.toLowerCase()
 
   if (extension === 'pdf') return 'PDF'
+  if (extension === 'dwf') return 'DWF'
   return 'UNKNOWN'
 }
 
@@ -34,11 +35,10 @@ export default function UploadDropzone({ file, onSelect }) {
 
       const fileName = selected.name.toLowerCase()
 
-      // The integrated backend accepts PDF files only.
-      const isPDF = fileName.endsWith('.pdf')
+      const isSupported = fileName.endsWith('.pdf') || fileName.endsWith('.dwf')
 
-      if (!isPDF) {
-        setError('Only PDF files are supported by the backend.')
+      if (!isSupported) {
+        setError('Only PDF and DWF files are supported by the backend.')
         return
       }
 
@@ -144,7 +144,7 @@ export default function UploadDropzone({ file, onSelect }) {
         </p>
 
         <p className="mt-1 text-xs text-muted">
-          PDF up to {MAX_SIZE_MB} MB
+          PDF or DWF up to {MAX_SIZE_MB} MB
         </p>
 
         <span
@@ -154,13 +154,13 @@ export default function UploadDropzone({ file, onSelect }) {
           }}
           className="mt-5 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-dark"
         >
-          Browse PDF
+          Browse PDF / DWF
         </span>
 
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,application/pdf"
+          accept=".pdf,.dwf,application/pdf,application/x-dwf"
           className="hidden"
           onChange={(e) => {
             validateAndSet(e.target.files?.[0])

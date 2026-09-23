@@ -3,3 +3,12 @@ output/
 backend_new/.env
 backend_new/__pycache__/
 backend_new/app/__pycache__/
+backend_new/venv/
+backend_new/.venv/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+__pycache__/
+*.py[cod]
